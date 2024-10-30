@@ -14,19 +14,16 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 const layoutStyle = {
-  // borderRadius: 8,
-  // overflow: "hidden",
-  // width: "calc(50% - 8px)",
-  // maxWidth: "calc(50% - 8px)",
+  paddingTop: "30px",
+  height: "100svh",
 };
 
 const headerStyle: React.CSSProperties = {
   textAlign: "center",
   paddingInline: "16px",
-  //color: "#fff",
   height: 64,
   lineHeight: "64px",
-  //backgroundColor: "#4096ff",
+  marginBottom: "30px",
 };
 
 const contentStyle: React.CSSProperties = {
@@ -34,14 +31,20 @@ const contentStyle: React.CSSProperties = {
   minHeight: 120,
   lineHeight: "120px",
   paddingInline: "16px",
-  //color: "#fff",
-  // backgroundColor: "#0958d9",
 };
 
 const footerStyle: React.CSSProperties = {
   textAlign: "center",
   color: "#fff",
   backgroundColor: "#4096ff",
+};
+
+const stepsStyle: React.CSSProperties = {
+  marginBottom: "60px",
+};
+
+const formItemStyles: React.CSSProperties = {
+  marginTop: "10px",
 };
 
 interface IFormValues {
@@ -55,19 +58,43 @@ interface IFormValues {
 
 export const SurveyPage = () => {
   const [current, setCurrent] = useState(0);
+  const [isSent, setIsSent] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const { control, handleSubmit } = useForm<IFormValues>();
 
-  const onSubmit = (data: unknown) => {
+  const onSubmit = async (data: IFormValues) => {
     if (current < steps.length - 1) {
       setCurrent(current + 1);
     } else {
+      try {
+        if (isSent) return;
+
+        setIsSent(true);
+        const response = await fetch(
+          "https://d5d36426qbakdipjf3c5.apigw.yandexcloud.net/api/survey",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const result = await response.json();
+        console.log(result);
+      } catch (error) {
+        console.error("Error:", error);
+      }
       console.log("Данные формы", data);
       messageApi.open({
         type: "success",
         content: "Данные отправлены. Спасибо!",
       });
-      // Здесь можно отправить данные на сервер или сделать что-то еще
     }
   };
 
@@ -83,7 +110,12 @@ export const SurveyPage = () => {
       <h1 style={headerStyle}>Not so boring survey 🙃 </h1>
       <Content style={contentStyle} id="survey">
         {contextHolder}
-        <Steps current={current} responsive={false} items={steps}></Steps>
+        <Steps
+          current={current}
+          responsive={false}
+          items={steps}
+          style={stepsStyle}
+        ></Steps>
         <AntForm onFinish={handleSubmit(onSubmit)}>
           {current === 0 && (
             <>
@@ -94,7 +126,7 @@ export const SurveyPage = () => {
                 rules={{ required: true }}
                 render={({ field }) => (
                   <AntForm.Item label="Из какого вы города?" required>
-                    <Input {...field} />
+                    <Input {...field} style={formItemStyles} />
                   </AntForm.Item>
                 )}
               />
@@ -108,7 +140,7 @@ export const SurveyPage = () => {
                 defaultValue={true}
                 render={({ field }) => (
                   <AntForm.Item label="А путешествовать любите?" required>
-                    <Radio.Group {...field}>
+                    <Radio.Group {...field} style={formItemStyles}>
                       <Radio value={true}>Да</Radio>
                       <Radio value={false}>Нет</Radio>
                     </Radio.Group>
@@ -132,6 +164,7 @@ export const SurveyPage = () => {
                       max={10}
                       marks={marks}
                       {...field}
+                      style={formItemStyles}
                     />
                   </AntForm.Item>
                 )}
@@ -147,7 +180,7 @@ export const SurveyPage = () => {
                 rules={{ required: true }}
                 render={({ field }) => (
                   <AntForm.Item label="Ваш любимый ингредиент пиццы" required>
-                    <Input {...field} />
+                    <Input {...field} style={formItemStyles} />
                   </AntForm.Item>
                 )}
               />
@@ -161,7 +194,7 @@ export const SurveyPage = () => {
                 rules={{ required: true }}
                 render={({ field }) => (
                   <AntForm.Item label="Android vs iPhone?" required>
-                    <Radio.Group {...field}>
+                    <Radio.Group {...field} style={formItemStyles}>
                       <Radio value={1}>Android</Radio>
                       <Radio value={2}>iPhone</Radio>
                     </Radio.Group>
@@ -178,7 +211,7 @@ export const SurveyPage = () => {
                 rules={{ required: true }}
                 render={({ field }) => (
                   <AntForm.Item label="Windows vs MacBook?" required>
-                    <Radio.Group {...field}>
+                    <Radio.Group {...field} style={formItemStyles}>
                       <Radio value={1}>Windows</Radio>
                       <Radio value={2}>MacBook</Radio>
                     </Radio.Group>
@@ -187,7 +220,7 @@ export const SurveyPage = () => {
               />
             </>
           )}
-          <div style={{ marginTop: 24 }}>
+          <div style={{ marginTop: 50 }}>
             <Button
               style={{ marginRight: 8 }}
               onClick={() => setCurrent(current - 1)}
@@ -201,7 +234,7 @@ export const SurveyPage = () => {
           </div>
         </AntForm>
       </Content>
-      <Footer style={footerStyle}>Footer</Footer>
+      <Footer style={footerStyle}>by Efremenkov A., 2024</Footer>
     </Layout>
   );
 };
