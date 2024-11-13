@@ -12,6 +12,7 @@ import {
 import { Content, Footer } from "antd/es/layout/layout";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const layoutStyle = {
   paddingTop: "30px",
@@ -60,7 +61,9 @@ export const SurveyPage = () => {
   const [current, setCurrent] = useState(0);
   const [isSent, setIsSent] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-  const { control, handleSubmit } = useForm<IFormValues>();
+  const { control, handleSubmit,
+    formState: { errors }, } = useForm<IFormValues>();
+  const navigate = useNavigate();
 
   const onSubmit = async (data: IFormValues) => {
     if (current < steps.length - 1) {
@@ -85,16 +88,17 @@ export const SurveyPage = () => {
           throw new Error("Network response was not ok");
         }
 
-        const result = await response.json();
-        console.log(result);
+        await response.json();
       } catch (error) {
         console.error("Error:", error);
       }
-      console.log("Данные формы", data);
+
       messageApi.open({
         type: "success",
         content: "Данные отправлены. Спасибо!",
       });
+
+      navigate("/success");
     }
   };
 
@@ -123,13 +127,14 @@ export const SurveyPage = () => {
                 name="from"
                 control={control}
                 defaultValue=""
-                rules={{ required: true }}
+                rules={{ required: true, maxLength: {value: 20, message: 'Слишком длинное название'} }}
                 render={({ field }) => (
                   <AntForm.Item label="Из какого вы города?" required>
                     <Input {...field} style={formItemStyles} />
                   </AntForm.Item>
                 )}
               />
+                    <p style={{margin: 0, color: 'red'}}>{errors.from?.message}</p>
             </>
           )}
           {current === 1 && (
@@ -177,13 +182,14 @@ export const SurveyPage = () => {
                 name="pizza"
                 control={control}
                 defaultValue=""
-                rules={{ required: true }}
+                rules={{ required: true, maxLength: {value: 30, message: 'Слишком длинное название'} }}
                 render={({ field }) => (
                   <AntForm.Item label="Ваш любимый ингредиент пиццы" required>
                     <Input {...field} style={formItemStyles} />
                   </AntForm.Item>
                 )}
-              />
+                />
+                <p style={{margin: 0, color: 'red'}}>{errors.pizza?.message}</p>
             </>
           )}
           {current === 4 && (
