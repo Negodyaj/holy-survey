@@ -169,7 +169,7 @@ export const ResultsPage = () => {
               <TagCloud
                 minSize={25}
                 maxSize={50}
-                style={{height: '220px'}}
+                className="tag-cloud"
                 tags={data.fromCounts.map((t, idx) => ({
                   ...t,
                   color: colors[idx % 10],

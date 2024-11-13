@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 import cloud from "d3-cloud";
 import { CountedProperty } from "./pages/Results/ResultsPage";

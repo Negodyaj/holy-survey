@@ -1,6 +1,5 @@
 import { Flex, Layout } from "antd";
 import icon from "./hlopushka.png";
-import React from "react";
 
 const layoutStyle = {
   height: "100svh",

@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/pages/results/resultspage.tsx","./src/pages/survey/surveypage.tsx"],"version":"5.6.3"}
+{"root":["./src/app.tsx","./src/wordcloud.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/pages/results/resultspage.tsx","./src/pages/results/datasetsprovider.ts","./src/pages/results/styles.ts","./src/pages/success/successpage.tsx","./src/pages/survey/surveypage.tsx"],"errors":true,"version":"5.6.3"}
