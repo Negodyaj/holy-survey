@@ -14,6 +14,7 @@ import {
 import { Bar, Doughnut } from "react-chartjs-2";
 import { getLoveTravelByFromData, getWeatherRate } from "./datasetsProvider";
 import { layoutStyle, gridStyle, h2Style, qrWrapperStyle } from "./styles";
+import image from "./ждун.png";
 
 ChartJS.register(
   ArcElement,
@@ -160,6 +161,12 @@ export const ResultsPage = () => {
   return (
     <Flex>
       <Layout style={layoutStyle}>
+        {isLoading && (
+          <img
+            src={image}
+            style={{ height: "75%", objectFit: "cover", width: "600px" }}
+          />
+        )}
         {!isLoading && (
           <div style={gridStyle}>
             <h2 style={h2Style}>Из какого вы города</h2>
